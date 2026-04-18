@@ -3,61 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <title>Quản Lý Đơn</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
   font-family: Arial;
   background: linear-gradient(135deg, #1e293b, #0f172a);
   color: #fff;
-  padding: 20px;
+  padding: 12px;
+  font-size: 16px;
 }
 
 /* FORM */
 input, select {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
   border: none;
+  font-size: 16px;
 }
 
 button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
   background: #22c55e;
-  color: #000;
   font-weight: bold;
   cursor: pointer;
 }
 
 /* TABLE */
+.table-wrap {
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
-  margin-top: 20px;
+  min-width: 500px; /* tránh bị bó */
+  margin-top: 15px;
   border-collapse: collapse;
   background: #1e293b;
   border-radius: 10px;
-  overflow: hidden;
-}
-
-th {
-  background: #334155;
 }
 
 th, td {
   padding: 10px;
-  text-align: center;
+  font-size: 14px;
 }
 
-/* chỉ highlight khi focus */
 td[contenteditable="true"]:focus {
   background: #020617;
   outline: 1px solid #22c55e;
-}
-
-tr:nth-child(even) {
-  background: #0f172a;
 }
 
 tfoot td {
@@ -68,34 +65,28 @@ tfoot td {
 
 /* SUMMARY */
 .summary {
-  margin-top: 25px;
-  padding: 15px;
-  background: #020617;
-  border: 2px solid #22c55e;
+  margin-top: 20px;
+  padding: 12px;
   border-radius: 10px;
   font-family: monospace;
+  font-size: 14px;
 }
 
-.line {
+.line, .profit {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .value {
-  color: #22c55e;
-  font-weight: bold;
-  min-width: 120px;
+  min-width: 100px;
   text-align: right;
 }
 
-/* profit riêng */
 .profit {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid #22c55e;
-  display: flex;
-  justify-content: space-between;
 }
 
 .profit .value {
@@ -103,10 +94,66 @@ tfoot td {
   font-size: 18px;
 }
 
-/* delete */
-.delete-btn {
-  background: #ef4444;
-  color: #fff;
+/* MOBILE tối ưu thêm */
+@media (max-width: 600px) {
+  h2 {
+    font-size: 18px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  button {
+    font-size: 18px;
+  }
+}
+
+/* FIX tràn layout */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* WRAP TABLE */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  min-width: unset; /* bỏ 500px */
+}
+
+/* tránh text làm bung layout */
+td, th {
+  word-break: break-word;
+}
+
+/* MOBILE tối ưu */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+
+  input, select, button {
+    font-size: 16px;
+  }
 }
 </style>
 </head>
@@ -124,6 +171,7 @@ tfoot td {
 </select>
 <button onclick="addOrder()">Thêm</button>
 
+<div class="table-wrap">
 <table>
 <thead>
 <tr>
@@ -147,6 +195,7 @@ tfoot td {
 </tr>
 </tfoot>
 </table>
+</div>
 
 <div class="summary">
   <div class="line">
