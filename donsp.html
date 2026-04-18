@@ -1,25 +1,281 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
+<title>Quản Lý Đơn</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #fff;
+  padding: 20px;
+}
+
+/* FORM */
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #22c55e;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  background: #334155;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+/* chỉ highlight khi focus */
+td[contenteditable="true"]:focus {
+  background: #020617;
+  outline: 1px solid #22c55e;
+}
+
+tr:nth-child(even) {
+  background: #0f172a;
+}
+
+tfoot td {
+  font-weight: bold;
+  background: #111827;
+  color: #22c55e;
+}
+
+/* SUMMARY */
+.summary {
+  margin-top: 25px;
+  padding: 15px;
+  background: #020617;
+  border: 2px solid #22c55e;
+  border-radius: 10px;
+  font-family: monospace;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.value {
+  color: #22c55e;
+  font-weight: bold;
+  min-width: 120px;
+  text-align: right;
+}
+
+/* profit riêng */
+.profit {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #22c55e;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profit .value {
+  color: #facc15;
+  font-size: 18px;
+}
+
+/* delete */
+.delete-btn {
+  background: #ef4444;
+  color: #fff;
+}
+</style>
+</head>
+
 <body>
-  <h1>Hello World</h1>
 
-  <div id="logBox" style="
-    margin-top:20px;
-    padding:10px;
-    background:#111;
-    color:#0f0;
-    font-family:monospace;
-    white-space:pre-wrap;
-  "></div>
+<h2>Danh Sách Đơn</h2>
 
-  <script>
-    function log(msg) {
-      const box = document.getElementById("logBox");
-      box.textContent += msg + "\n";
-    }
+<input id="name">
+<input id="money" type="number" placeholder="Số Tiền Thanh Toán">
+<select id="type">
+  <option>Tiền Mặt</option>
+  <option>SPP</option>
+  <option>Momo</option>
+</select>
+<button onclick="addOrder()">Thêm</button>
 
-    log("JS chạy ok");
-    log("Test lần 2");
-  </script>
+<table>
+<thead>
+<tr>
+  <th>Tên</th>
+  <th>Thanh Toán</th>
+  <th>Xu</th>
+  <th>Tổng</th>
+  <th>Xóa</th>
+</tr>
+</thead>
+
+<tbody id="list"></tbody>
+
+<tfoot>
+<tr>
+  <td>Tổng</td>
+  <td id="sumMoney"></td>
+  <td id="sumXu"></td>
+  <td id="sumTotal"></td>
+  <td></td>
+</tr>
+</tfoot>
+</table>
+
+<div class="summary">
+  <div class="line">
+    <span>Tổng Tiền (Rate 10/10)</span>
+    <span class="value" id="line1"></span>
+  </div>
+
+  <div class="line">
+    <span>Rate 8/10 (Thanh Toán + Xu × 0.8)</span>
+    <span class="value" id="line2"></span>
+  </div>
+
+  <div class="line">
+    <span>Làm Tròn Xuống</span>
+    <span class="value" id="line3"></span>
+  </div>
+
+  <div class="profit">
+    <span>Profit</span>
+    <span class="value" id="line4"></span>
+  </div>
+</div>
+
+<script>
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+window.onload = () => {
+  resetForm();
+};
+
+function resetForm() {
+  document.getElementById("name").value = "Đơn " + (orders.length + 1);
+  document.getElementById("money").value = "";
+  document.getElementById("money").focus();
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") addOrder();
+});
+
+function addOrder() {
+  const name = document.getElementById("name").value;
+  const money = Number(document.getElementById("money").value);
+
+  if (!money) return;
+
+  orders.push({
+    name,
+    money,
+    xu: money,
+    total: money * 2
+  });
+
+  save();
+  render();
+  resetForm();
+}
+
+function save() {
+  localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+function roundDown10k(num) {
+  return Math.floor(num / 10000) * 10000;
+}
+
+function deleteRow(i) {
+  orders.splice(i, 1);
+  save();
+  render();
+  resetForm(); // FIX số đơn sau khi xóa
+}
+
+function updateCell(i, field, el) {
+  let val = el.innerText.trim();
+
+  if (field === "money") {
+    val = Number(val) || 0;
+    orders[i].money = val;
+    orders[i].xu = val;
+    orders[i].total = val * 2;
+  } else {
+    orders[i].name = val;
+  }
+
+  save();
+  render();
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  let sumMoney = 0;
+  let sumXu = 0;
+  let sumTotal = 0;
+
+  orders.forEach((o, i) => {
+    sumMoney += o.money;
+    sumXu += o.xu;
+    sumTotal += o.total;
+
+    list.innerHTML += `
+      <tr>
+        <td contenteditable="true" onblur="updateCell(${i}, 'name', this)">${o.name}</td>
+        <td contenteditable="true" onblur="updateCell(${i}, 'money', this)">${o.money}</td>
+        <td>${o.xu}</td>
+        <td>${o.total}</td>
+        <td><button class="delete-btn" onclick="deleteRow(${i})">X</button></td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("sumMoney").innerHTML = "<b>"+sumMoney+"</b>";
+  document.getElementById("sumXu").innerHTML = "<b>"+sumXu+"</b>";
+  document.getElementById("sumTotal").innerHTML = "<b>"+sumTotal+"</b>";
+
+  const rateMoney = sumMoney + sumXu * 0.8;
+  const floorMoney = roundDown10k(rateMoney);
+  const profit = floorMoney - sumXu;
+
+  document.getElementById("line1").innerText = sumTotal;
+  document.getElementById("line2").innerText = rateMoney;
+  document.getElementById("line3").innerText = floorMoney;
+  document.getElementById("line4").innerText = profit;
+}
+
+render();
+</script>
+
 </body>
 </html>
