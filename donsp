@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Hello World</h1>
+
+  <div id="logBox" style="
+    margin-top:20px;
+    padding:10px;
+    background:#111;
+    color:#0f0;
+    font-family:monospace;
+    white-space:pre-wrap;
+  "></div>
+
+  <script>
+    function log(msg) {
+      const box = document.getElementById("logBox");
+      box.textContent += msg + "\n";
+    }
+
+    log("JS chạy ok");
+    log("Test lần 2");
+  </script>
+</body>
+</html>
