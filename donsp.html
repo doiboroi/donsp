@@ -5,51 +5,138 @@
 <title>Quản Lý Đơn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  font-family: Arial;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #1e293b, #0f172a);
   color: #fff;
   padding: 12px;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
 }
 
 /* FORM */
-input, select {
+
+input,
+select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
   border: none;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
+  border: none;
   border-radius: 8px;
-  font-size: 16px;
   background: #22c55e;
+  color: white;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
 }
 
+button:active {
+  transform: scale(0.98);
+}
+
 /* TABLE */
+
 .table-wrap {
+  width: 100%;
   overflow-x: auto;
+  margin-top: 12px;
 }
 
 table {
   width: 100%;
-  min-width: 500px; /* tránh bị bó */
-  margin-top: 15px;
   border-collapse: collapse;
-  background: #1e293b;
+  overflow: hidden;
   border-radius: 10px;
 }
 
-th, td {
-  padding: 10px;
-  font-size: 14px;
+/* HEADER */
+
+thead th {
+  background: #0f172a;
+  color: #f8fafc;
+  font-weight: bold;
+}
+
+/* DÒNG DỮ LIỆU */
+
+tbody tr:nth-child(odd) {
+  background: #1e293b;
+}
+
+tbody tr:nth-child(even) {
+  background: #2b3a52;
+}
+
+tbody tr:hover {
+  background: #3b4b66;
+}
+
+/* TỔNG */
+
+tfoot td {
+  background: #111827;
+  color: #22c55e;
+  font-weight: bold;
+}
+
+/* CELL */
+
+th,
+td {
+  padding: 8px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* CĂN LỀ */
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4) {
+  text-align: right;
+}
+
+th:last-child,
+td:last-child {
+  text-align: center;
+}
+
+/* EDIT */
+
+td[contenteditable="true"] {
+  cursor: text;
 }
 
 td[contenteditable="true"]:focus {
@@ -57,30 +144,44 @@ td[contenteditable="true"]:focus {
   outline: 1px solid #22c55e;
 }
 
-tfoot td {
-  font-weight: bold;
-  background: #111827;
-  color: #22c55e;
+/* DELETE */
+
+.delete-btn {
+  width: auto;
+  min-width: 30px;
+  padding: 4px 8px;
+  background: #ef4444;
+  font-size: 12px;
 }
 
 /* SUMMARY */
+
 .summary {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.04);
   border-radius: 10px;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.line, .profit {
+.line,
+.profit {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 6px;
 }
 
 .value {
-  min-width: 100px;
+  min-width: 90px;
   text-align: right;
+  font-weight: bold;
+}
+
+#line3 {
+  color: #facc15;
 }
 
 .profit {
@@ -91,68 +192,48 @@ tfoot td {
 
 .profit .value {
   color: #facc15;
-  font-size: 18px;
+  font-size: 17px;
 }
 
-/* MOBILE tối ưu thêm */
-@media (max-width: 600px) {
+/* RATE EDIT */
+
+#rateEdit {
+  display: inline-block;
+  min-width: 25px;
+  text-align: center;
+  border-bottom: 1px dashed #22c55e;
+  outline: none;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  body {
+    padding: 8px;
+  }
+
   h2 {
     font-size: 18px;
   }
 
-  th, td {
-    padding: 8px;
-    font-size: 13px;
-  }
-
+  input,
+  select,
   button {
-    font-size: 18px;
-  }
-}
-
-/* FIX tràn layout */
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* WRAP TABLE */
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-/* TABLE */
-table {
-  width: 100%;
-  min-width: unset; /* bỏ 500px */
-}
-
-/* tránh text làm bung layout */
-td, th {
-  word-break: break-word;
-}
-
-/* MOBILE tối ưu */
-@media (max-width: 480px) {
-  body {
-    padding: 10px;
+    font-size: 14px;
   }
 
-  table {
-    font-size: 13px;
-  }
-
-  th, td {
+  th,
+  td {
     padding: 6px;
+    font-size: 12px;
   }
 
-  input, select, button {
-    font-size: 16px;
+  .summary {
+    font-size: 12px;
+  }
+
+  .value {
+    min-width: 70px;
   }
 }
 </style>
@@ -199,32 +280,75 @@ td, th {
 
 <div class="summary">
   <div class="line">
-    <span>Tổng Tiền (Rate 10/10)</span>
+    <span>Tổng Tiền (Rate 10/10) (Trả shipper + xu)</span>
     <span class="value" id="line1"></span>
   </div>
 
+  <br>
+  Lấy từ c.H chưa làm tròn
+  <!-- <hr> -->
+
   <div class="line">
-    <span>Rate 8/10 (Thanh Toán + Xu × 0.8)</span>
+
+    <span>
+      Rate
+      <span id="rateEdit"
+            contenteditable="true"
+            style="display:inline-block;min-width:25px;border-bottom:1px dashed #22c55e;">
+        8
+      </span>/10
+      (Th.Toán + Xu ×
+      <span id="rateText">0.8</span>)
+    </span>
     <span class="value" id="line2"></span>
   </div>
 
+  <br>
+
   <div class="line">
-    <span>Làm Tròn Xuống</span>
+    <span>Lấy từ c.H đã làm tròn xuống:</span>
     <span class="value" id="line3"></span>
   </div>
 
   <div class="profit">
-    <span>Profit</span>
+    <span>Cất vô bóp</span>
     <span class="value" id="line4"></span>
   </div>
 </div>
 
 <script>
 let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+let rate = Number(localStorage.getItem("rate") || "8");
 
 window.onload = () => {
+  document.getElementById("rateEdit").innerText = rate;
+  document.getElementById("rateText").innerText = (rate / 10);
   resetForm();
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const rateEdit = document.getElementById("rateEdit");
+
+  rateEdit.addEventListener("blur", () => {
+
+    let v = Number(rateEdit.innerText.trim());
+
+    if (isNaN(v) || v < 0) v = 0;
+    if (v > 10) v = 10;
+
+    rate = v;
+
+    rateEdit.innerText = rate;
+    document.getElementById("rateText").innerText = (rate / 10);
+
+    localStorage.setItem("rate", rate);
+
+    render();
+  });
+
+});
+
 
 function resetForm() {
   document.getElementById("name").value = "Đơn " + (orders.length + 1);
@@ -313,7 +437,8 @@ function render() {
   document.getElementById("sumXu").innerHTML = "<b>"+sumXu+"</b>";
   document.getElementById("sumTotal").innerHTML = "<b>"+sumTotal+"</b>";
 
-  const rateMoney = sumMoney + sumXu * 0.8;
+  // const rateMoney = sumMoney + sumXu * 0.8;
+  const rateMoney = sumMoney + sumXu * (rate / 10);
   const floorMoney = roundDown10k(rateMoney);
   const profit = floorMoney - sumXu;
 
